@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How It Works · Jatayu</title>
+  <meta name="description" content="How Jatayu makes AI agents accessible. A single layer between your agent and your users that adapts every interaction.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg-canvas: #FFFFFF;
+      --bg-sunken: #F4F4F4;
+      --bg-inverse: #0B0B0B;
+      --fg-1: #111111;
+      --fg-2: #555555;
+      --fg-3: #6B6B6B;
+      --fg-on-inverse-1: #FFFFFF;
+      --fg-on-inverse-2: #B5B5B5;
+      --accent: #D7F25C;
+      --accent-soft: #ECF7B3;
+      --accent-ink: #2E3A0A;
+      --border-subtle: rgba(0,0,0,0.08);
+      --border-default: rgba(0,0,0,0.14);
+      --font-sans: 'Google Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg-canvas);
+      color: var(--fg-2);
+      line-height: 1.7;
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 32px;
+    }
+
+    /* Nav */
+    nav { padding: 16px 0; border-bottom: 1px solid var(--border-subtle); }
+    .nav-inner { display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-size: 1.1rem; font-weight: 600; color: var(--fg-1); letter-spacing: -0.02em; text-decoration: none; }
+    .nav-links { display: flex; align-items: center; gap: 28px; }
+    .nav-links a { font-size: 0.88rem; color: var(--fg-2); text-decoration: none; transition: color 0.15s; }
+    .nav-links a:hover { color: var(--fg-1); }
+    .btn-sm { display: inline-block; font-size: 13px; font-weight: 500; padding: 7px 16px; border-radius: 9999px; text-decoration: none; transition: opacity 0.15s; }
+    .nav-links a.btn-dark { background: var(--fg-1); color: #FFFFFF; }
+    .nav-links a.btn-dark:hover { color: #FFFFFF; opacity: 0.8; }
+
+    .eyebrow { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--fg-3); margin-bottom: 12px; }
+    .hl { background: linear-gradient(transparent 58%, var(--accent) 58%); padding: 0 2px; }
+    .section { padding: 72px 0; }
+    .section-border { border-top: 1px solid var(--border-subtle); }
+
+    /* Hero */
+    .hero { padding: 80px 0 64px; text-align: center; }
+    .hero h1 {
+      font-size: clamp(36px, 5vw, 60px);
+      font-weight: 500;
+      color: var(--fg-1);
+      letter-spacing: -0.03em;
+      line-height: 1.08;
+      text-wrap: balance;
+      margin-bottom: 16px;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .hero p {
+      font-size: 1.1rem;
+      color: var(--fg-2);
+      max-width: 520px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* Before/After */
+    .compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 8px;
+    }
+    .compare-card {
+      border-radius: 14px;
+      padding: 32px;
+    }
+    .compare-card.before {
+      background: var(--bg-sunken);
+    }
+    .compare-card.after {
+      background: var(--bg-inverse);
+      color: var(--fg-on-inverse-2);
+    }
+    .compare-card .compare-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 16px;
+    }
+    .compare-card.before .compare-label { color: var(--fg-3); }
+    .compare-card.after .compare-label { color: var(--accent); }
+    .compare-card h3 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    .compare-card.before h3 { color: var(--fg-1); }
+    .compare-card.after h3 { color: var(--fg-on-inverse-1); }
+    .compare-list {
+      list-style: none;
+    }
+    .compare-list li {
+      font-size: 0.88rem;
+      padding: 6px 0;
+      padding-left: 22px;
+      position: relative;
+      line-height: 1.5;
+    }
+    .compare-card.before .compare-list li::before {
+      content: '✕';
+      position: absolute;
+      left: 0;
+      color: #B23A2C;
+      font-size: 12px;
+      top: 7px;
+    }
+    .compare-card.after .compare-list li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 600;
+      top: 6px;
+    }
+
+    /* Big number row */
+    .numbers {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-top: 8px;
+    }
+    .number-card {
+      background: var(--bg-sunken);
+      border-radius: 14px;
+      padding: 32px;
+      text-align: center;
+    }
+    .number-card .num {
+      font-size: 2.4rem;
+      font-weight: 600;
+      color: var(--fg-1);
+      letter-spacing: -0.03em;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .number-card p {
+      font-size: 0.88rem;
+      color: var(--fg-3);
+    }
+
+    /* Split sections */
+    .split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: center;
+    }
+    .split-text .eyebrow { margin-bottom: 10px; }
+    .split-text h2 {
+      font-size: clamp(24px, 2.8vw, 36px);
+      font-weight: 500;
+      color: var(--fg-1);
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      margin-bottom: 12px;
+    }
+    .split-text p {
+      font-size: 0.95rem;
+      color: var(--fg-2);
+      line-height: 1.65;
+      margin-bottom: 10px;
+      max-width: 460px;
+    }
+    .split-visual {
+      background: var(--bg-sunken);
+      border-radius: 14px;
+      padding: 32px;
+    }
+    .split-visual.dark {
+      background: var(--bg-inverse);
+    }
+
+    /* Scenario blocks inside split visuals */
+    .scenario {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .scenario-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+    .scenario-icon {
+      flex-shrink: 0;
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      background: var(--bg-canvas);
+    }
+    .dark .scenario-icon {
+      background: rgba(255,255,255,0.08);
+    }
+    .scenario-row h4 {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--fg-1);
+      margin-bottom: 2px;
+    }
+    .dark .scenario-row h4 { color: var(--fg-on-inverse-1); }
+    .scenario-row p {
+      font-size: 0.8rem;
+      color: var(--fg-3);
+      line-height: 1.5;
+    }
+    .dark .scenario-row p { color: var(--fg-on-inverse-2); }
+
+    /* Inline quote */
+    .pull-quote {
+      border-left: 3px solid var(--accent);
+      padding: 16px 0 16px 24px;
+      margin: 20px 0;
+      max-width: 500px;
+    }
+    .pull-quote p {
+      font-size: 1rem;
+      color: var(--fg-1);
+      font-weight: 500;
+      font-style: italic;
+      line-height: 1.55;
+    }
+    .pull-quote cite {
+      display: block;
+      font-size: 0.82rem;
+      color: var(--fg-3);
+      font-style: normal;
+      margin-top: 8px;
+    }
+
+    /* Integration logos placeholder */
+    .integrations {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+    .integration-tag {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 500;
+      padding: 8px 16px;
+      border-radius: 9999px;
+      background: var(--bg-sunken);
+      color: var(--fg-1);
+    }
+
+    /* CTA */
+    .cta-panel {
+      background: var(--bg-inverse);
+      border-radius: 18px;
+      padding: 56px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 40px;
+      margin: 72px 0 0;
+    }
+    .cta-panel h2 {
+      font-size: clamp(24px, 3vw, 36px);
+      font-weight: 500;
+      color: var(--fg-on-inverse-1);
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      margin-bottom: 10px;
+    }
+    .cta-panel p {
+      color: var(--fg-on-inverse-2);
+      font-size: 0.95rem;
+      max-width: 420px;
+      line-height: 1.6;
+    }
+    .btn-accent {
+      display: inline-block;
+      background: var(--accent);
+      color: var(--accent-ink);
+      font-size: 14px;
+      font-weight: 600;
+      padding: 12px 28px;
+      border-radius: 9999px;
+      text-decoration: none;
+      transition: opacity 0.15s;
+      white-space: nowrap;
+    }
+    .btn-accent:hover { opacity: 0.85; }
+
+    /* Footer */
+    footer { padding: 24px 0; margin-top: 56px; border-top: 1px solid var(--border-subtle); }
+    .footer-inner { display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem; color: var(--fg-3); }
+    .footer-inner a { color: var(--fg-3); text-decoration: none; }
+    .footer-inner a:hover { color: var(--fg-1); }
+
+    @media (max-width: 768px) {
+      .container { padding: 0 20px; }
+      .hero { padding: 48px 0 40px; }
+      .section { padding: 48px 0; }
+      .compare, .numbers, .split { grid-template-columns: 1fr; }
+      .split.reverse { direction: ltr; }
+      .cta-panel { flex-direction: column; padding: 36px 24px; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="container nav-inner">
+      <a href="index.html" class="logo">Jatayu</a>
+      <div class="nav-links">
+        <a href="index.html#platform">Platform</a>
+        <a href="how-it-works.html">How it works</a>
+        <a href="index.html#use-cases">Use cases</a>
+        <a href="contact.html" class="btn-sm btn-dark">Request a demo</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+
+    <!-- Hero -->
+    <section class="hero">
+      <p class="eyebrow">How it works</p>
+      <h1>One layer between your agent and <span class="hl">every user on earth</span></h1>
+      <p>Your agent talks to Jatayu. Jatayu talks to the user. The user could be sighted, blind, deaf, or speaking any of 40 languages. Your code doesn't change.</p>
+    </section>
+
+    <!-- Before / After -->
+    <section class="section section-border">
+      <p class="eyebrow" style="text-align: center;">The gap today</p>
+      <div class="compare">
+        <div class="compare-card before">
+          <p class="compare-label">Without Jatayu</p>
+          <h3>Your agent works for some people</h3>
+          <ul class="compare-list">
+            <li>Output assumes the user can see a screen</li>
+            <li>Input assumes a keyboard and a mouse</li>
+            <li>Interface is English-only or poorly translated</li>
+            <li>No compliance documentation for procurement</li>
+            <li>Accessibility is a separate, expensive project</li>
+          </ul>
+        </div>
+        <div class="compare-card after">
+          <p class="compare-label">With Jatayu</p>
+          <h3>Your agent works for every person</h3>
+          <ul class="compare-list">
+            <li>Output adapts to screen readers, voice, braille</li>
+            <li>Input accepts voice, switch, eye tracking, gesture</li>
+            <li>40+ languages with domain-aware localization</li>
+            <li>WCAG 2.2 AA compliance reports generated automatically</li>
+            <li>One integration, done in a day</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Numbers -->
+    <section class="section section-border">
+      <p class="eyebrow" style="text-align: center;">Why this matters</p>
+      <div class="numbers">
+        <div class="number-card">
+          <div class="num">1.3B</div>
+          <p>People globally live with a significant disability</p>
+        </div>
+        <div class="number-card">
+          <div class="num">72%</div>
+          <p>Of enterprise deals require accessibility compliance in procurement</p>
+        </div>
+        <div class="number-card">
+          <div class="num">$36B</div>
+          <p>Annual spending power of disability community in the US alone</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Split 1: Output adaptation -->
+    <section class="section section-border">
+      <div class="split">
+        <div class="split-text">
+          <p class="eyebrow">Output adaptation</p>
+          <h2>Your agent says one thing. Each user hears it their way.</h2>
+          <p>Jatayu intercepts every agent response and restructures it for the user's context. A table becomes a navigable list for a screen reader. A multi-step instruction becomes sequential voice prompts. A dense paragraph becomes chunked, high-contrast blocks for low vision.</p>
+          <p>This is not text-to-speech bolted on. It is semantic restructuring. The meaning stays. The form adapts.</p>
+        </div>
+        <div class="split-visual">
+          <div class="scenario">
+            <div class="scenario-row">
+              <div class="scenario-icon">👁️</div>
+              <div>
+                <h4>Screen reader user</h4>
+                <p>Agent response is restructured into navigable ARIA landmarks. Tables read as labeled rows. Actions are announced with context.</p>
+              </div>
+            </div>
+            <div class="scenario-row">
+              <div class="scenario-icon">🔊</div>
+              <div>
+                <h4>Voice-only user</h4>
+                <p>Response is broken into conversational turns with natural pacing. Confirmations before actions. Repeat and clarify built in.</p>
+              </div>
+            </div>
+            <div class="scenario-row">
+              <div class="scenario-icon">⠿</div>
+              <div>
+                <h4>Braille display user</h4>
+                <p>Output is segmented to fit 40-cell and 80-cell displays. Navigation cues let the user move between sections without scrolling through everything.</p>
+              </div>
+            </div>
+            <div class="scenario-row">
+              <div class="scenario-icon">Aa</div>
+              <div>
+                <h4>Cognitive accessibility</h4>
+                <p>Simplified language mode. Shorter sentences. One instruction at a time. No jargon unless the user's profile says they want it.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Split 2: Input normalization (reversed) -->
+    <section class="section section-border">
+      <div class="split" style="direction: rtl;">
+        <div class="split-text" style="direction: ltr;">
+          <p class="eyebrow">Input normalization</p>
+          <h2>Your agent accepts text. The user sends whatever they can.</h2>
+          <p>Voice. A single switch. Eye gaze. A sip-and-puff device. Touch on a phone with motor tremor compensation. Jatayu normalizes all of it into the text or structured command your agent already expects.</p>
+          <p>You never build input handling for each device. You never even know which device was used.</p>
+        </div>
+        <div class="split-visual dark" style="direction: ltr;">
+          <div class="scenario">
+            <div class="scenario-row">
+              <div class="scenario-icon">🎤</div>
+              <div>
+                <h4>Voice to intent</h4>
+                <p>Not just transcription. Jatayu extracts the intent and maps it to an agent action. "Go back to the last thing" becomes a structured navigation command.</p>
+              </div>
+            </div>
+            <div class="scenario-row">
+              <div class="scenario-icon">◎</div>
+              <div>
+                <h4>Switch scanning</h4>
+                <p>Agent options are presented as a scannable list. Single-switch and dual-switch modes. Timing adapts to the user's speed.</p>
+              </div>
+            </div>
+            <div class="scenario-row">
+              <div class="scenario-icon">👁</div>
+              <div>
+                <h4>Eye tracking</h4>
+                <p>Dwell-click mapped to agent commands. Gaze zones for common actions. Calibrated per session for each user's range of motion.</p>
+              </div>
+            </div>
+            <div class="scenario-row">
+              <div class="scenario-icon">🌐</div>
+              <div>
+                <h4>Any language, any script</h4>
+                <p>Input in Arabic, Mandarin, Hindi, or Swahili is understood in context. Your agent receives normalized, domain-appropriate English (or any target language).</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Split 3: Compliance -->
+    <section class="section section-border">
+      <div class="split">
+        <div class="split-text">
+          <p class="eyebrow">Compliance</p>
+          <h2>The audit trail your legal and procurement teams need</h2>
+          <p>Every agent interaction is logged with accessibility metadata. Jatayu generates the reports that enterprise procurement, government contracts, and healthcare compliance require. You stop treating accessibility as a last-minute scramble before a deal closes.</p>
+          <div class="pull-quote">
+            <p>"We lost a $2M government contract because we couldn't produce a VPAT for our AI assistant. That's the kind of problem Jatayu eliminates."</p>
+            <cite>Head of Engineering, Enterprise SaaS company</cite>
+          </div>
+        </div>
+        <div class="split-visual">
+          <div class="scenario">
+            <div class="scenario-row">
+              <div class="scenario-icon">📋</div>
+              <div>
+                <h4>WCAG 2.2 AA reports</h4>
+                <p>Auto-generated after every release. Maps every agent interaction pattern to WCAG success criteria. Exportable PDF for legal review.</p>
+              </div>
+            </div>
+            <div class="scenario-row">
+              <div class="scenario-icon">📄</div>
+              <div>
+                <h4>VPAT generation</h4>
+                <p>Voluntary Product Accessibility Template, filled automatically. Required by most US federal and state procurement. Updated continuously, not once a year.</p>
+              </div>
+            </div>
+            <div class="scenario-row">
+              <div class="scenario-icon">🔍</div>
+              <div>
+                <h4>Regression detection</h4>
+                <p>New agent behavior is tested against accessibility baselines in CI. Regressions are flagged before deploy, not discovered by a user filing a complaint.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Integrations -->
+    <section class="section section-border" style="text-align: center;">
+      <p class="eyebrow">Integrations</p>
+      <h2 style="font-size: clamp(24px, 2.8vw, 36px); font-weight: 500; color: var(--fg-1); letter-spacing: -0.02em; line-height: 1.15; margin-bottom: 8px;">Works with the frameworks you already use</h2>
+      <p style="font-size: 0.95rem; color: var(--fg-2); max-width: 460px; margin: 0 auto 24px; line-height: 1.6;">Jatayu connects to your agent through a lightweight SDK. If your agent has an input and an output, Jatayu can sit in front of it.</p>
+      <div class="integrations" style="justify-content: center;">
+        <span class="integration-tag">LangChain</span>
+        <span class="integration-tag">CrewAI</span>
+        <span class="integration-tag">AutoGen</span>
+        <span class="integration-tag">OpenAI Agents SDK</span>
+        <span class="integration-tag">LlamaIndex</span>
+        <span class="integration-tag">Semantic Kernel</span>
+        <span class="integration-tag">Custom HTTP</span>
+        <span class="integration-tag">Python</span>
+        <span class="integration-tag">TypeScript</span>
+        <span class="integration-tag">REST API</span>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <div class="cta-panel">
+      <div>
+        <h2>See it with your own agent</h2>
+        <p>Book a 30-minute call. We'll connect Jatayu to your agent live and show you what accessible output looks like for your actual users.</p>
+      </div>
+      <a href="contact.html" class="btn-accent">Request a demo</a>
+    </div>
+
+  </div>
+
+  <footer>
+    <div class="container footer-inner">
+      <span>&copy; 2026 Jatayu AI, Inc.</span>
+      <a href="mailto:hello@jatayu.ai">hello@jatayu.ai</a>
+    </div>
+  </footer>
+
+</body>
+</html>

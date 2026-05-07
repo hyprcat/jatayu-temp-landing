@@ -3,110 +3,644 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Jatayu</title>
+  <title>Jatayu · The Accessibility Layer for AI Agents</title>
+  <meta name="description" content="Jatayu is a developer platform that makes AI agents accessible to everyone. Ship agents that work across abilities, languages, and input modalities.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
+    :root {
+      --bg-canvas: #FFFFFF;
+      --bg-sunken: #F4F4F4;
+      --bg-inverse: #0B0B0B;
+      --fg-1: #111111;
+      --fg-2: #555555;
+      --fg-3: #6B6B6B;
+      --fg-on-inverse-1: #FFFFFF;
+      --fg-on-inverse-2: #B5B5B5;
+      --accent: #D7F25C;
+      --accent-soft: #ECF7B3;
+      --accent-ink: #2E3A0A;
+      --border-subtle: rgba(0,0,0,0.08);
+      --border-default: rgba(0,0,0,0.14);
+      --font-sans: 'Google Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
     body {
-      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      background: #ffffff;
-      color: #444;
+      font-family: var(--font-sans);
+      background: var(--bg-canvas);
+      color: var(--fg-2);
       line-height: 1.7;
       font-size: 16px;
       -webkit-font-smoothing: antialiased;
     }
 
-    .page {
-      max-width: 680px;
+    .container {
+      max-width: 1100px;
       margin: 0 auto;
-      padding: 40px 24px 60px;
+      padding: 0 32px;
     }
 
-    h1 {
-      font-size: 1.8rem;
+    /* ── Nav ── */
+    nav {
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo {
+      font-size: 1.1rem;
       font-weight: 600;
-      color: #1a1a1a;
-      margin-bottom: 4px;
-      letter-spacing: -0.01em;
+      color: var(--fg-1);
+      letter-spacing: -0.02em;
     }
-
-    .date {
-      font-size: 0.85rem;
-      color: #999;
-      margin-bottom: 20px;
+    .nav-links { display: flex; align-items: center; gap: 28px; }
+    .nav-links a {
+      font-size: 0.88rem;
+      color: var(--fg-2);
+      text-decoration: none;
+      transition: color 0.15s;
     }
+    .nav-links a:hover { color: var(--fg-1); }
+    .btn-sm {
+      display: inline-block;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 7px 16px;
+      border-radius: 9999px;
+      text-decoration: none;
+      transition: opacity 0.15s;
+    }
+    .nav-links a.btn-dark {
+      background: var(--fg-1);
+      color: #FFFFFF;
+    }
+    .nav-links a.btn-dark:hover { color: #FFFFFF; opacity: 0.8; }
 
-    p {
+    /* ── Shared ── */
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--fg-3);
+      margin-bottom: 12px;
+    }
+    .section { padding: 72px 0; }
+    .section-border { border-top: 1px solid var(--border-subtle); }
+    .section-heading {
+      font-size: clamp(26px, 3vw, 40px);
+      font-weight: 500;
+      color: var(--fg-1);
+      letter-spacing: -0.025em;
+      line-height: 1.12;
       margin-bottom: 10px;
     }
+    .section-sub {
+      font-size: 1rem;
+      color: var(--fg-2);
+      max-width: 520px;
+      line-height: 1.6;
+    }
+    .hl {
+      background: linear-gradient(transparent 58%, var(--accent) 58%);
+      padding: 0 2px;
+    }
 
-    p strong {
-      color: #1a1a1a;
+    /* ── Hero ── */
+    .hero { padding: 80px 0 72px; }
+    .hero h1 {
+      font-size: clamp(40px, 5.4vw, 72px);
+      font-weight: 500;
+      color: var(--fg-1);
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+      text-wrap: balance;
+      margin-bottom: 20px;
+      max-width: 780px;
+    }
+    .hero-sub {
+      font-size: 1.1rem;
+      color: var(--fg-2);
+      max-width: 560px;
+      line-height: 1.65;
+      margin-bottom: 28px;
+    }
+    .hero-actions { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+    .btn-accent {
+      display: inline-block;
+      background: var(--accent);
+      color: var(--accent-ink);
+      font-size: 14px;
       font-weight: 600;
+      padding: 11px 24px;
+      border-radius: 9999px;
+      text-decoration: none;
+      transition: opacity 0.15s;
+    }
+    .btn-accent:hover { opacity: 0.85; }
+    .btn-outline {
+      display: inline-block;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 10px 22px;
+      border-radius: 9999px;
+      text-decoration: none;
+      border: 1px solid var(--border-default);
+      color: var(--fg-1);
+      transition: border-color 0.15s;
+    }
+    .btn-outline:hover { border-color: var(--fg-1); }
+    .hero-note {
+      margin-top: 16px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--fg-3);
+    }
+    .hero-note code {
+      background: var(--bg-sunken);
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 12px;
     }
 
-    a {
-      color: #1a1a1a;
-      text-decoration: underline;
-      text-underline-offset: 3px;
-      text-decoration-color: #ccc;
-      transition: text-decoration-color 0.2s;
+    /* ── Stats bar ── */
+    .stats-bar {
+      display: flex;
+      gap: 48px;
+      padding: 32px 0;
+      border-top: 1px solid var(--border-subtle);
+      border-bottom: 1px solid var(--border-subtle);
+      flex-wrap: wrap;
+    }
+    .stat-item .stat-value {
+      font-size: 1.6rem;
+      font-weight: 600;
+      color: var(--fg-1);
+      letter-spacing: -0.02em;
+    }
+    .stat-item .stat-label {
+      font-size: 0.82rem;
+      color: var(--fg-3);
+      margin-top: 2px;
     }
 
-    a:hover {
-      text-decoration-color: #1a1a1a;
+    /* ── Grid layouts ── */
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 28px;
     }
-
-    .links {
-      list-style: none;
-      margin-top: 4px;
-      margin-bottom: 16px;
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-top: 28px;
     }
-
-    .links li {
+    .card {
+      background: var(--bg-canvas);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 24px;
+    }
+    .card-sunken {
+      background: var(--bg-sunken);
+      border: none;
+    }
+    .card .card-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--fg-3);
+      margin-bottom: 10px;
+    }
+    .card h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--fg-1);
       margin-bottom: 6px;
     }
-
-    .links li span {
-      color: #999;
-      margin-right: 6px;
+    .card p {
+      font-size: 0.88rem;
+      color: var(--fg-2);
+      line-height: 1.6;
     }
 
-    .footer {
+    /* ── Code block ── */
+    .code-block {
+      background: var(--bg-sunken);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 20px 24px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      line-height: 1.7;
+      color: var(--fg-1);
+      overflow-x: auto;
       margin-top: 28px;
-      padding-top: 16px;
-      border-top: 1px solid #eee;
+      max-width: 620px;
+    }
+    .code-block .comment { color: var(--fg-3); }
+    .code-block .string { color: #2E6B3A; }
+    .code-block .keyword { color: #8B3A62; }
+
+    /* ── How it works ── */
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-top: 28px;
+    }
+    .step {
+      padding: 20px;
+    }
+    .step-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 9999px;
+      background: var(--bg-sunken);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--fg-1);
+      margin-bottom: 12px;
+    }
+    .step h3 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--fg-1);
+      margin-bottom: 6px;
+    }
+    .step p {
+      font-size: 0.85rem;
+      color: var(--fg-2);
+      line-height: 1.55;
+    }
+
+    /* ── Use cases ── */
+    .card-feature {
+      border-radius: 18px;
+      padding: 32px;
+    }
+    .card-feature h3 {
+      font-size: 1.1rem;
+      margin-bottom: 8px;
+    }
+    .tag-row { display: flex; gap: 6px; margin-top: 12px; flex-wrap: wrap; }
+    .tag {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      border: 1px solid var(--border-subtle);
+      color: var(--fg-3);
+    }
+
+    /* ── CTA panel ── */
+    .cta-panel {
+      background: var(--bg-inverse);
+      border-radius: 18px;
+      padding: 56px 48px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 40px;
+      margin: 64px 0 0;
+    }
+    .cta-panel .eyebrow { color: var(--fg-on-inverse-2); }
+    .cta-panel h2 {
+      font-size: clamp(26px, 3vw, 40px);
+      font-weight: 500;
+      color: var(--fg-on-inverse-1);
+      letter-spacing: -0.025em;
+      line-height: 1.1;
+      margin-bottom: 12px;
+    }
+    .cta-panel p {
+      color: var(--fg-on-inverse-2);
+      font-size: 0.95rem;
+      max-width: 420px;
+      line-height: 1.6;
+    }
+    .cta-right {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      flex-shrink: 0;
+      padding-top: 24px;
+    }
+    .btn-inverse {
+      display: inline-block;
+      background: var(--bg-canvas);
+      color: var(--fg-1);
+      font-size: 14px;
+      font-weight: 500;
+      padding: 11px 24px;
+      border-radius: 9999px;
+      text-decoration: none;
+      text-align: center;
+      transition: opacity 0.15s;
+    }
+    .btn-inverse:hover { opacity: 0.9; }
+    .btn-ghost-dark {
+      display: inline-block;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 10px 24px;
+      border-radius: 9999px;
+      text-decoration: none;
+      text-align: center;
+      border: 1px solid rgba(255,255,255,0.15);
+      color: var(--fg-on-inverse-2);
+      transition: border-color 0.15s;
+    }
+    .btn-ghost-dark:hover { border-color: rgba(255,255,255,0.4); }
+
+    /* ── Footer ── */
+    footer { padding: 32px 0; border-top: 1px solid var(--border-subtle); }
+    .footer-grid {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+    .footer-col h4 {
       font-size: 0.8rem;
-      color: #bbb;
+      font-weight: 600;
+      color: var(--fg-1);
+      margin-bottom: 10px;
+    }
+    .footer-col a {
+      display: block;
+      font-size: 0.82rem;
+      color: var(--fg-3);
+      text-decoration: none;
+      margin-bottom: 6px;
+    }
+    .footer-col a:hover { color: var(--fg-1); }
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 28px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border-subtle);
+      font-size: 0.78rem;
+      color: var(--fg-3);
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .grid-3, .steps { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 640px) {
+      .container { padding: 0 20px; }
+      .hero { padding: 48px 0 40px; }
+      .section { padding: 48px 0; }
+      .grid-3, .grid-2, .steps { grid-template-columns: 1fr; }
+      .cta-panel {
+        flex-direction: column;
+        padding: 36px 24px;
+      }
+      .cta-right { padding-top: 0; }
+      .stats-bar { gap: 28px; }
     }
   </style>
 </head>
 <body>
-  <div class="page">
 
-    <h1>Introducing Jatayu</h1>
-    <p class="date">May 2026</p>
+  <!-- Nav -->
+  <nav>
+    <div class="container nav-inner">
+      <span class="logo">Jatayu</span>
+      <div class="nav-links">
+        <a href="#platform">Platform</a>
+        <a href="#how-it-works">How it works</a>
+        <a href="#use-cases">Use cases</a>
+        <a href="contact.html" class="btn-sm btn-dark">Request a demo</a>
+      </div>
+    </div>
+  </nav>
 
-    <p><strong>We are Jatayu, and we are building AI agents that are truly accessible to everyone.</strong></p>
+  <div class="container">
 
-    <p>The current wave of AI agents is powerful but largely inaccessible. Agents today assume technical fluency, unimpaired vision, standard input devices, and fluency in English. They are built for a narrow slice of the world's population. We think that is a problem worth solving.</p>
+    <!-- Hero -->
+    <section class="hero">
+      <p class="eyebrow">Developer platform</p>
+      <h1>The accessibility layer for <span class="hl">AI agents</span></h1>
+      <p class="hero-sub">Jatayu gives developers the SDK, runtime adapters, and compliance tooling to make any AI agent accessible across abilities, languages, and input modalities. One integration. Every user.</p>
+      <div class="hero-actions">
+        <a href="contact.html" class="btn-accent">Request early access</a>
+        <a href="how-it-works.html" class="btn-outline">See how it works</a>
+      </div>
+    </section>
 
-    <p>Accessibility is not an afterthought or a compliance checkbox. It is a design principle. When AI agents can be used by a person who is blind, or deaf, or who navigates the world with a motor impairment, or who speaks a language that the tech industry has historically ignored, those agents are simply better for everyone.</p>
+    <!-- Stats -->
+    <div class="stats-bar">
+      <div class="stat-item">
+        <div class="stat-value">14</div>
+        <div class="stat-label">Input modalities supported</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">40+</div>
+        <div class="stat-label">Languages</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">WCAG 2.2 AA</div>
+        <div class="stat-label">Compliance out of the box</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">3 lines</div>
+        <div class="stat-label">To make an agent accessible</div>
+      </div>
+    </div>
 
-    <p>We are building the infrastructure and interfaces that make AI agents work for people across the full spectrum of abilities, languages, and contexts. This includes how agents communicate, how they accept input, how they present output, and how they adapt to the person using them. Not wrapping existing agents with accommodations, but designing agent architectures where accessibility is structural.</p>
+    <!-- Platform -->
+    <section class="section section-border" id="platform">
+      <p class="eyebrow">Platform</p>
+      <h2 class="section-heading">Accessibility as infrastructure, not a retrofit</h2>
+      <p class="section-sub">Most agents assume a sighted, English-speaking user with a keyboard. Jatayu sits between your agent and your users, adapting every interaction to the person on the other end.</p>
 
-    <p>AI agents are at an inflection point. They are moving from demos to daily use, from chat windows to real-world tasks. The decisions made now about how agents interact with people will define the defaults for years. We want those defaults to be inclusive. The founding team brings together experience in AI systems, assistive technology, and human-computer interaction. We have seen what happens when accessibility is bolted on late. We are here to make sure that does not happen with agents.</p>
+      <div class="grid-3">
+        <div class="card">
+          <p class="card-eyebrow">Output adapters</p>
+          <h3>Every modality, one API</h3>
+          <p>Agent responses automatically adapt to screen readers, voice output, braille displays, and simplified language modes. You write the agent logic once.</p>
+        </div>
+        <div class="card">
+          <p class="card-eyebrow">Input handlers</p>
+          <h3>Beyond keyboard and mouse</h3>
+          <p>Voice commands, switch access, eye tracking, gesture input, and touch. Jatayu normalizes all of them into a single event stream your agent already understands.</p>
+        </div>
+        <div class="card">
+          <p class="card-eyebrow">Language runtime</p>
+          <h3>40+ languages, zero config</h3>
+          <p>Real-time translation and localization for agent interfaces. Not machine-translated UI strings. Context-aware, agent-native language adaptation.</p>
+        </div>
+        <div class="card">
+          <p class="card-eyebrow">Compliance engine</p>
+          <h3>WCAG 2.2 AA by default</h3>
+          <p>Every agent interaction is logged, auditable, and compliant. Jatayu generates accessibility reports and flags violations before they ship.</p>
+        </div>
+        <div class="card">
+          <p class="card-eyebrow">User profiles</p>
+          <h3>Agents that learn preferences</h3>
+          <p>Persistent accessibility profiles that travel with the user across agents. Set once, respected everywhere. Font size, contrast, input method, language.</p>
+        </div>
+        <div class="card">
+          <p class="card-eyebrow">Testing</p>
+          <h3>CI for accessibility</h3>
+          <p>Run accessibility checks in your pipeline. Jatayu tests agent flows against real assistive technology patterns and catches regressions before deploy.</p>
+        </div>
+      </div>
+    </section>
 
-    <p>We are in stealth and heads-down building. A formal announcement with details on our work, our team, and what we are releasing will come soon. If this mission resonates with you, we would love to hear from you.</p>
+    <!-- Code example -->
+    <section class="section section-border">
+      <p class="eyebrow">Developer experience</p>
+      <h2 class="section-heading">Three lines to make any agent accessible</h2>
+      <p class="section-sub">Wrap your existing agent with the Jatayu runtime. It handles modality detection, output adaptation, and compliance. Your agent code stays unchanged.</p>
+      <div class="code-block">
+        <span class="keyword">from</span> jatayu <span class="keyword">import</span> AccessibleAgent<br><br>
+        <span class="comment"># wrap any agent framework: LangChain, CrewAI, AutoGen, custom</span><br>
+        agent = AccessibleAgent(your_agent)<br>
+        response = agent.run(user_input)<br><br>
+        <span class="comment"># response is adapted to the user's accessibility profile</span><br>
+        <span class="comment"># screen reader output, voice, braille, simplified language</span><br>
+        <span class="comment"># all handled automatically</span>
+      </div>
+    </section>
 
-    <ul class="links">
-      <li><span>&rarr;</span> <a href="mailto:hello@jatayu.ai">hello@jatayu.ai</a></li>
-    </ul>
+    <!-- How it works -->
+    <section class="section section-border" id="how-it-works">
+      <p class="eyebrow">How it works</p>
+      <h2 class="section-heading">From install to accessible in minutes</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <h3>Install the SDK</h3>
+          <p>pip install, npm install, or pull the Docker image. Works with Python, TypeScript, and any HTTP-based agent.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <h3>Wrap your agent</h3>
+          <p>One line of code wraps your existing agent with the Jatayu runtime. No refactoring. No changes to your agent logic.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <h3>Deploy</h3>
+          <p>Jatayu detects each user's accessibility needs at runtime. Output adapts automatically. Input normalizes automatically.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <h3>Monitor</h3>
+          <p>Dashboard shows accessibility metrics, compliance status, and user preference patterns. Audit logs export for SOC 2 and ADA reporting.</p>
+        </div>
+      </div>
+    </section>
 
-    <div class="footer">
-      Jatayu &copy; 2026
+    <!-- Use cases -->
+    <section class="section section-border" id="use-cases">
+      <p class="eyebrow">Use cases</p>
+      <h2 class="section-heading">Built for teams shipping agents to real users</h2>
+      <div class="grid-2">
+        <div class="card card-feature card-sunken">
+          <p class="card-eyebrow">Healthcare</p>
+          <h3>Patient-facing agents that meet ADA requirements</h3>
+          <p>Healthcare agents need to work for elderly patients, users with low vision, and non-English speakers. Jatayu handles modality adaptation and generates the compliance documentation your legal team needs.</p>
+          <div class="tag-row">
+            <span class="tag">ADA</span>
+            <span class="tag">Section 508</span>
+            <span class="tag">Multi-language</span>
+          </div>
+        </div>
+        <div class="card card-feature card-sunken">
+          <p class="card-eyebrow">Financial services</p>
+          <h3>Accessible banking agents for every customer</h3>
+          <p>Financial institutions serve customers across the full ability spectrum. Jatayu ensures your AI banking assistant works with screen readers, voice input, and high-contrast modes without a separate codebase.</p>
+          <div class="tag-row">
+            <span class="tag">WCAG 2.2</span>
+            <span class="tag">SOC 2</span>
+            <span class="tag">Audit logs</span>
+          </div>
+        </div>
+        <div class="card card-feature card-sunken">
+          <p class="card-eyebrow">Enterprise SaaS</p>
+          <h3>Ship accessible copilots to Fortune 500 buyers</h3>
+          <p>Enterprise procurement requires accessibility compliance. Jatayu is the difference between passing the accessibility audit and losing the deal. Drop it in before the security review.</p>
+          <div class="tag-row">
+            <span class="tag">VPAT</span>
+            <span class="tag">Enterprise SSO</span>
+            <span class="tag">On-prem</span>
+          </div>
+        </div>
+        <div class="card card-feature card-sunken">
+          <p class="card-eyebrow">Government</p>
+          <h3>Section 508 compliant AI from day one</h3>
+          <p>Government contracts require Section 508 compliance. Jatayu makes your agent compliant at the infrastructure level, not through manual remediation after the build.</p>
+          <div class="tag-row">
+            <span class="tag">Section 508</span>
+            <span class="tag">FedRAMP ready</span>
+            <span class="tag">ITAR</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <div class="cta-panel">
+      <div class="cta-left">
+        <p class="eyebrow">Early access</p>
+        <h2>We are working with design partners now</h2>
+        <p>We are onboarding a small number of teams building agents for healthcare, finance, government, and enterprise. If your users need accessible AI, let's talk.</p>
+      </div>
+      <div class="cta-right">
+        <a href="contact.html" class="btn-inverse">Request a demo</a>
+        <a href="contact.html" class="btn-ghost-dark">Partner with us</a>
+      </div>
     </div>
 
   </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h4>Product</h4>
+          <a href="#platform">Platform</a>
+          <a href="#how-it-works">How it works</a>
+          <a href="#use-cases">Use cases</a>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <a href="mailto:hello@jatayu.ai">Contact</a>
+          <a href="mailto:careers@jatayu.ai">Careers</a>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <a href="#">Privacy</a>
+          <a href="#">Terms</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Jatayu AI, Inc.</span>
+        <span>San Francisco, CA</span>
+      </div>
+    </div>
+  </footer>
+
 </body>
 </html>
