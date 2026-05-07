@@ -1,0 +1,8 @@
+spec:
+  name: jatayu-landing
+  static_sites:
+  - git:
+      branch: main
+      repo_clone_url: https://github.com/hyprcat/jatayu-temp-landing.git
+    name: jatayu-landing
+    source_dir: /
