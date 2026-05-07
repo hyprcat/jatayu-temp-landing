@@ -1,0 +1,9 @@
+name: jatayu-landing
+static_sites:
+  - name: jatayu-landing
+    github:
+      repo: hyprcat/jatayu-temp-landing
+      branch: main
+      deploy_on_push: true
+    source_dir: /
+    index_document: index.html
